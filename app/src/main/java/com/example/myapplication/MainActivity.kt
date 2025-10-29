@@ -26,6 +26,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.Image
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 
 class MainActivity : ComponentActivity() {
@@ -91,10 +92,10 @@ fun BottomWhiteBlock(modifier: Modifier = Modifier) {
             .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // Белый фон с закругленными углами сверху
             .padding(top = 8.dp, start = 16.dp, end = 16.dp) // Внутренние отступы
     ) {
-        ButtonWithPadding(text = "Поиск", leftIconResId = R.drawable.search, rightIconResId = R.drawable.continue_btn, targetActivity = SearchActivity::class.java ) // Замените на ваш ресурс
+        ButtonWithPadding(stringResource(id = R.string.search), leftIconResId = R.drawable.search, rightIconResId = R.drawable.continue_btn, targetActivity = SearchActivity::class.java ) // Замените на ваш ресурс
         ButtonWithPadding(text = "Плейлист", leftIconResId = R.drawable.music, rightIconResId = R.drawable.continue_btn,targetActivity = SearchActivity::class.java) // Замените на ваш ресурс
         ButtonWithPadding(text = "Избранное", leftIconResId = R.drawable.like, rightIconResId = R.drawable.continue_btn,targetActivity = SearchActivity::class.java) // Замените на ваш ресурс
-        ButtonWithPadding(text = "Настройки", leftIconResId = R.drawable.setting, rightIconResId = R.drawable.continue_btn, targetActivity = SettingsActivity::class.java) // Замените на ваш ресурс
+        ButtonWithPadding(stringResource(id = R.string.settings), leftIconResId = R.drawable.setting, rightIconResId = R.drawable.continue_btn, targetActivity = SettingsActivity::class.java) // Замените на ваш ресурс
     }
 }
 
