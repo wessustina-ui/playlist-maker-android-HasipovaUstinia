@@ -13,4 +13,6 @@
     <string name="share_app">Поделиться приложением</string>
     <string name="dark_theme">Темная тема</string>
     <string name="search">Поиск</string>
+    <string name="favorite">Избранное</string>
+    <string name="playlist">Плейлист</string>
 </resources>

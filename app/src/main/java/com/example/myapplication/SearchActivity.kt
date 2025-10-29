@@ -3,34 +3,47 @@ package com.example.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import com.example.myapplication.componentUI.SearchState
+import com.example.myapplication.componentUI.TrackListItem
+import com.example.myapplication.componentUI.SearchViewModel
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.ViewModelProvider
 class SearchActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = ViewModelProvider(this, SearchViewModel.getViewModelFactory())
+            .get(SearchViewModel::class.java)
         setContent {
             MaterialTheme {
-                Surface(color = MaterialTheme.colorScheme.background) {
+                Surface(color = Color.White) {
+                    val state by viewModel.searchScreenState.collectAsState()
                     Column {
                         SearchHeader(onBackClick = { finish() })
-                        SearchScreen()
+                        SearchScreen(
+                            viewModel = viewModel,
+                            searchState = state
+                        )
+
                     }
                 }
             }
@@ -74,44 +87,45 @@ fun SearchHeader(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun SearchScreen() {
-    var searchQuery by remember { mutableStateOf("") }
+fun SearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: SearchViewModel,
+    searchState: SearchState
+) {
+    var text by remember { mutableStateOf("") }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(52.dp)
-            .padding(horizontal = 16.dp)
-    ) {
+    Column(modifier = modifier.padding(16.dp)) {
+        val placeholderTextStyle = LocalTextStyle.current.copy(
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            lineHeight = 16.sp,
+            color = Color(0xFFAEAFB4)
+        )
         OutlinedTextField(
-            value = searchQuery,
-            onValueChange = { searchQuery = it },
+            value = text,
+            onValueChange = { text = it },
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
             leadingIcon = {
-                IconButton(onClick = { /* Логика нажатия на лупу остается пустой */ }) {
-                    Image(
-                        painter = painterResource(R.drawable.grey_search_icon),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp) // Размер иконки
-                    )
+                IconButton(onClick = { viewModel.search(text) }) {Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = Color(0xFFAEAFB4)
+                )
                 }
             },
             placeholder = {
                 Text(
-                    text = stringResource(id = R.string.search),
-                    color = Color(0xFFAEAFB4),
-                    fontSize = 16.sp,
-                    lineHeight = 16.sp,
-                    textAlign = TextAlign.Start
+                    text = stringResource(R.string.search),
+                    style = placeholderTextStyle
                 )
             },
             trailingIcon = {
-                if (searchQuery.isNotEmpty()) {
-                    IconButton(onClick = { searchQuery = "" }) {
+                if (text.isNotEmpty()) {
+                    IconButton(onClick = { text = "" }) {
                         Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = "Clear Icon"
+                            imageVector = Icons.Filled.Clear,
+                            contentDescription = "Clear"
                         )
                     }
                 }
@@ -123,14 +137,55 @@ fun SearchScreen() {
                 focusedContainerColor = Color(0xFFE6E8EB),
                 unfocusedContainerColor = Color(0xFFE6E8EB),
                 disabledContainerColor = Color(0xFFE6E8EB),
-                focusedPlaceholderColor = Color(0xFF7D7E83),
-                unfocusedPlaceholderColor = Color(0xFF7D7E83),
-                disabledPlaceholderColor = Color(0xFFB0B1B6),
                 cursorColor = Color.Black
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(52.dp)  // высота инпута 36dp внутри контейнера 52dp
+                .height(52.dp)
+                .background(color = Color(0xFFE6E8EB), shape = RoundedCornerShape(8.dp))
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        when (searchState) {
+            is SearchState.Initial -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    stringResource(R.string.search)
+                }
+            }
+            is SearchState.Searching -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+            is SearchState.Success -> {
+                LazyColumn {
+                    items(searchState.foundList) { track ->
+                        TrackListItem(track)
+                        Divider(thickness = 0.5.dp)
+                    }
+                }
+            }
+            is SearchState.Fail -> {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Ошибка: ${searchState.error}", color = Color.Red)
+                }
+            }
+        }
     }
 }
