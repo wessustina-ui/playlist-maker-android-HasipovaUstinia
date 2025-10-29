@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">My Application</string>
+    <string name="user_agreement">Пользовательское соглашение</string>
+    <string name="offer_url">https://practicum.yandex.ru/about/offers/</string>
+    <string name="button_text">Отправить письмо</string>
+    <string name="email_subject">Тема письма</string>
+    <string name="email_body">Тело письма</string>
+    <string name="write_to_support">Написать в поддержку</string>
+    <string name="message_from_developers">Сообщение разработчикам и разработчицам приложения Playlist Maker</string>
+    <string name="thanks_from_developers">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="share_from">Поделиться через</string>
+    <string name="settings">Настройки</string>
+    <string name="share_app">Поделиться приложением</string>
+    <string name="dark_theme">Темная тема</string>
+    <string name="search">Поиск</string>
 </resources>
