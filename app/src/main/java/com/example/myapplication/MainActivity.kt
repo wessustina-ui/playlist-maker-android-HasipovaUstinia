@@ -2,7 +2,6 @@ package com.example.myapplication
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -10,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.myapplication.ui.theme.MyApplicationTheme
@@ -28,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,67 +38,75 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun MainContent(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize().background(Color(0xFF3772E7))) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween // Распределение пространства между элементами
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Header()
-            BottomWhiteBlock(modifier = Modifier.weight(1f)) // Используем weight для растягивания блока
+            BottomWhiteBlock(modifier = Modifier.weight(1f))
         }
     }
 }
-
 @Composable
 fun Header() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp)
-            .background(Color(0xFF3772E7)), // Цвет фона блока
-        contentAlignment = Alignment.CenterStart // Выравнивание текста по левому краю
+            .background(Color(0xFF3772E7)),
+        contentAlignment = Alignment.CenterStart
     ) {
         Text(
             text = "Playlist maker",
-            color = Color.White, // Цвет текста
-            style = customTextStyle(), // Применяем пользовательский стиль текста
-            modifier = Modifier.padding(start = 16.dp) // Отступ от левого края
+            color = Color.White,
+            style = customTextStyle(),
+            modifier = Modifier.padding(start = 16.dp)
         )
     }
 }
-
-// Функция для определения пользовательского стиля текста
 @Composable
 fun customTextStyle(): TextStyle {
     return TextStyle(
-        fontSize = 22.sp, // Размер шрифта 22px (22sp в Compose)
-        lineHeight = 22.sp, // Установите lineHeight в соответствии с вашими требованиями (100% от fontSize)
-        letterSpacing = 0.sp // Установите letterSpacing в соответствии с вашими требованиями (по умолчанию 0)
+        fontSize = 22.sp,
+        lineHeight = 22.sp,
+        letterSpacing = 0.sp
     )
 }
-
 @Composable
 fun BottomWhiteBlock(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)) // Белый фон с закругленными углами сверху
-            .padding(top = 8.dp, start = 16.dp, end = 16.dp) // Внутренние отступы
+            .background(Color.White, shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp)
     ) {
-        ButtonWithPadding(stringResource(id = R.string.search), leftIconResId = R.drawable.search, rightIconResId = R.drawable.continue_btn, targetActivity = SearchActivity::class.java ) // Замените на ваш ресурс
-        ButtonWithPadding(text = "Плейлист", leftIconResId = R.drawable.music, rightIconResId = R.drawable.continue_btn,targetActivity = SearchActivity::class.java) // Замените на ваш ресурс
-        ButtonWithPadding(text = "Избранное", leftIconResId = R.drawable.like, rightIconResId = R.drawable.continue_btn,targetActivity = SearchActivity::class.java) // Замените на ваш ресурс
-        ButtonWithPadding(stringResource(id = R.string.settings), leftIconResId = R.drawable.setting, rightIconResId = R.drawable.continue_btn, targetActivity = SettingsActivity::class.java) // Замените на ваш ресурс
+        ButtonWithPadding(stringResource(id = R.string.search),
+            leftIconResId = R.drawable.search,
+            rightIconResId = R.drawable.continue_btn,
+            targetActivity = SearchActivity::class.java
+        )
+        ButtonWithPadding(text = stringResource(R.string.playlist),
+            leftIconResId = R.drawable.music,
+            rightIconResId = R.drawable.continue_btn,
+            targetActivity = SearchActivity::class.java
+        )
+        ButtonWithPadding(text = stringResource(R.string.favorite),
+            leftIconResId = R.drawable.like,
+            rightIconResId = R.drawable.continue_btn,
+            targetActivity = SearchActivity::class.java
+        )
+        ButtonWithPadding(stringResource(id = R.string.settings),
+            leftIconResId = R.drawable.setting,
+            rightIconResId = R.drawable.continue_btn,
+            targetActivity = SettingsActivity::class.java
+        )
     }
 }
-
 @Composable
-fun ButtonWithPadding(text: String, leftIconResId: Int, rightIconResId: Int, targetActivity: Class<*>) {
-    val context = LocalContext.current // Получаем контекст для использования в Toast
-
+fun ButtonWithPadding(text: String, leftIconResId: Int, rightIconResId: Int, targetActivity: Class<*>) {val context = LocalContext.current
     Button(
         onClick = {
             val intent = Intent(context, targetActivity)
@@ -110,40 +114,35 @@ fun ButtonWithPadding(text: String, leftIconResId: Int, rightIconResId: Int, tar
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 21.dp) // Отступ сверху и снизу
-            .padding(horizontal = 12.dp), // Отступ по бокам
-        colors = ButtonDefaults.buttonColors(containerColor = Color.White) // Фон кнопки белый
+            .padding(vertical = 21.dp)
+            .padding(horizontal = 12.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Размещаем элементы по краям
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Левая иконка
             Image(
                 painter = painterResource(id = leftIconResId),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp) // Размер левой иконки
+                modifier = Modifier.size(24.dp)
             )
-
-            // Текст кнопки
             Text(
                 text = text,
-                color = Color.Black, // Цвет текста (можно изменить)
-                modifier = Modifier.weight(1f) // Позволяем тексту занимать доступное пространство
-                    .padding(start = 8.dp), // Отступ между текстом и левой иконкой
+                color = Color.Black,
+                modifier = Modifier.weight(1f)
+                    .padding(start = 8.dp),
                 style = TextStyle(
-                    fontSize = 22.sp, // Размер шрифта
-                    lineHeight = 22.sp, // Высота строки (можно настроить)
-                    textAlign = TextAlign.Left // Выравнивание текста по центру
+                    fontSize = 22.sp,
+                    lineHeight = 22.sp,
+                    textAlign = TextAlign.Left
                 )
             )
-
-            // Правая иконка
             Image(
                 painter = painterResource(id = rightIconResId),
                 contentDescription = null,
-                modifier = Modifier.size(24.dp) // Размер правой иконки
+                modifier = Modifier.size(24.dp)
             )
         }
     }
