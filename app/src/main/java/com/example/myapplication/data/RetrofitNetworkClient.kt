@@ -1,5 +1,7 @@
 package com.example.myapplication.data
 
+import com.example.myapplication.domain.NetworkClient
+
 class RetrofitNetworkClient(private val storage: Storage) : NetworkClient {
     override fun doRequest(request: Any): TracksSearchResponse {
         val searchList = storage.search((request as TracksSearchRequest).expression)

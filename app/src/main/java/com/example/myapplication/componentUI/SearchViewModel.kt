@@ -33,6 +33,10 @@ class SearchViewModel(
             }
         }
     }
+
+    fun clearSearch() {
+        _searchScreenState.value = SearchState.Initial // Сбрасываем состояние на начальное
+    }
     companion object {
         fun getViewModelFactory(): androidx.lifecycle.ViewModelProvider.Factory =
             object : androidx.lifecycle.ViewModelProvider.Factory {

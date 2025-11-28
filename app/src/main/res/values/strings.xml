@@ -15,4 +15,12 @@
     <string name="search">Поиск</string>
     <string name="favorite">Избранное</string>
     <string name="playlist">Плейлист</string>
+    <string name="playlistMaker">Playlist maker</string>
+    <string name="Back">Back</string>
+    <string name="Remember">Remember</string>
+    <string name="clear">clear</string>
+    <string name="error">Ошибка:</string>
+    <string name="supportEmail">student@example.com</string>
+    <string name="shareRowText">Здравствуйте! Посмотрите это приложение: [ваша ссылка]</string>
+    <string name="emailClientDontLoaded">Почтовый клиент не установлен</string>
 </resources>

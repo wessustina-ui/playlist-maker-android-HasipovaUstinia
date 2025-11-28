@@ -1,3 +1,4 @@
+
 package com.example.myapplication
 
 import android.os.Bundle
@@ -72,7 +73,7 @@ fun SearchHeader(onBackClick: () -> Unit) {
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
-                    contentDescription = "Back",
+                    contentDescription = stringResource(R.string.Back),
                     tint = Color.Black
                 )
             }
@@ -107,11 +108,12 @@ fun SearchScreen(
             shape = RoundedCornerShape(8.dp),
             singleLine = true,
             leadingIcon = {
-                IconButton(onClick = { viewModel.search(text) }) {Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Search",
-                    tint = Color(0xFFAEAFB4)
-                )
+                IconButton(onClick = { viewModel.search(text) }) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = stringResource(R.string.search),
+                        tint = Color(0xFFAEAFB4)
+                    )
                 }
             },
             placeholder = {
@@ -122,10 +124,13 @@ fun SearchScreen(
             },
             trailingIcon = {
                 if (text.isNotEmpty()) {
-                    IconButton(onClick = { text = "" }) {
+                    IconButton(onClick = {
+                        text = ""
+                        viewModel.clearSearch()
+                    }) {
                         Icon(
                             imageVector = Icons.Filled.Clear,
-                            contentDescription = "Clear"
+                            contentDescription = stringResource(R.string.clear)
                         )
                     }
                 }
@@ -183,7 +188,7 @@ fun SearchScreen(
                         .padding(16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Ошибка: ${searchState.error}", color = Color.Red)
+                    Text("${stringResource(R.string.error)} ${searchState.error}", color = Color.Red)
                 }
             }
         }
