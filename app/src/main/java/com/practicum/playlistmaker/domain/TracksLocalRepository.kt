@@ -3,9 +3,14 @@ package com.practicum.playlistmaker.domain
 import kotlinx.coroutines.flow.Flow
 
 interface TracksLocalRepository {
-    suspend fun insertTrackToPlaylist(track: Track, playlistId: Long)
-    suspend fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long)
-    suspend fun updateTrackFavoriteStatus(track: Track, isFavorite: Boolean)
-    fun getFavoriteTracks(): Flow<List<Track>>
-    fun getTrackById(trackId: Long): Flow<Track?>
+
+    suspend fun addTrackToPlaylist(track: Track, playlistId: Long)
+
+    suspend fun removeTrackFromPlaylist(trackId: Long, playlistId: Long)
+
+    suspend fun setTrackFavoriteStatus(track: Track, isFavorite: Boolean)
+
+    fun fetchFavoriteTracks(): Flow<List<Track>>
+
+    fun fetchTrackById(trackId: Long): Flow<Track?>
 }

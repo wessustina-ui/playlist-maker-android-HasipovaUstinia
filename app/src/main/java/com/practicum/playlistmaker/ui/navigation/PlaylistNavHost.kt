@@ -32,30 +32,32 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun PlaylistNavHost(
     searchRepository: TracksRepository,
     playlistsRepository: PlaylistsRepository,
-    tracksLocalRepository: TracksLocalRepository,
+    localTracksRepository: TracksLocalRepository,
     searchHistoryRepository: SearchHistoryRepository,
     isDarkTheme: Boolean,
-    onToggleTheme: (Boolean) -> Unit
+    onThemeToggle: (Boolean) -> Unit
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.MAIN.name) {
+        // Главный экран
         composable(Screen.MAIN.name) {
             MainScreen(
-                onSearchClick = { navController.navigate(Screen.SEARCH.name) },
-                onPlaylistsClick = { navController.navigate(Screen.PLAYLISTS.name) },
-                onFavoritesClick = { navController.navigate(Screen.FAVORITES.name) },
-                onSettingsClick = { navController.navigate(Screen.SETTINGS.name) },
-                isDarkTheme = isDarkTheme
+                onSearchNavigation = { navController.navigate(Screen.SEARCH.name) },
+                onPlaylistsNavigation = { navController.navigate(Screen.PLAYLISTS.name) },
+                onFavoritesNavigation = { navController.navigate(Screen.FAVORITES.name) },
+                onSettingsNavigation = { navController.navigate(Screen.SETTINGS.name) },
+                darkThemeEnabled = isDarkTheme
             )
         }
+        // Экран поиска
         composable(Screen.SEARCH.name) {
-            val factory = SearchViewModelFactory(searchRepository, searchHistoryRepository)
-            val vm: SearchViewModel = viewModel(factory = factory)
+            val viewModelFactory = SearchViewModelFactory(searchRepository, searchHistoryRepository)
+            val searchViewModel: SearchViewModel = viewModel(factory = viewModelFactory)
             SearchScreen(
-                viewModel = vm,
+                viewModel = searchViewModel,
                 isDarkTheme = isDarkTheme,
                 onBackClick = { navController.popBackStack() },
-                onTrackClick = { track: AppTrack ->
+                onTrackClick = { track ->
                     navController.navigate(
                         "${Screen.TRACK_DETAILS.name}/" +
                                 "${track.trackId}/" +
@@ -67,34 +69,38 @@ fun PlaylistNavHost(
                 }
             )
         }
+        // Экран настроек
         composable(Screen.SETTINGS.name) {
             SettingsScreen(
                 isDarkTheme = isDarkTheme,
-                onToggleTheme = onToggleTheme,
+                onToggleTheme = onThemeToggle,
                 onBackClick = { navController.popBackStack() }
             )
         }
+        // Экран плейлистов
         composable(Screen.PLAYLISTS.name) {
-            val factory = PlaylistViewModelFactory(playlistsRepository, tracksLocalRepository)
-            val vm: PlaylistViewModel = viewModel(factory = factory)
+            val viewModelFactory = PlaylistViewModelFactory(playlistsRepository, localTracksRepository)
+            val playlistViewModel: PlaylistViewModel = viewModel(factory = viewModelFactory)
             PlaylistsScreen(
-                viewModel = vm,
+                viewModel = playlistViewModel,
                 onCreatePlaylist = { navController.navigate(Screen.CREATE_PLAYLIST.name) },
-                onOpenPlaylist = { playlistId: Long -> navController.navigate("${Screen.PLAYLIST_DETAILS.name}/$playlistId") },
+                onOpenPlaylist = { playlistId -> navController.navigate("${Screen.PLAYLIST_DETAILS.name}/$playlistId") },
                 onBackClick = { navController.popBackStack() },
                 isDarkTheme = isDarkTheme
             )
         }
+        // Создание нового плейлиста
         composable(Screen.CREATE_PLAYLIST.name) {
-            val factory = PlaylistViewModelFactory(playlistsRepository, tracksLocalRepository)
-            val vm: PlaylistViewModel = viewModel(factory = factory)
+            val viewModelFactory = PlaylistViewModelFactory(playlistsRepository, localTracksRepository)
+            val playlistViewModel: PlaylistViewModel = viewModel(factory = viewModelFactory)
             CreatePlaylistScreen(
-                viewModel = vm,
+                viewModel = playlistViewModel,
                 onBackClick = { navController.popBackStack() },
                 onSaved = { navController.popBackStack() },
                 isDarkTheme = isDarkTheme
             )
         }
+        // Детали трека
         composable(
             route = "${Screen.TRACK_DETAILS.name}/{trackId}/{trackName}/{artistName}/{trackTime}/{artworkUrl100}",
             arguments = listOf(
@@ -105,28 +111,30 @@ fun PlaylistNavHost(
                 navArgument("artworkUrl100") { type = NavType.StringType; nullable = true }
             )
         ) { backStackEntry ->
-            val tId = backStackEntry.arguments?.getLong("trackId") ?: 0L
-            val tName = backStackEntry.arguments?.getString("trackName") ?: ""
-            val aName = backStackEntry.arguments?.getString("artistName") ?: ""
-            val time = backStackEntry.arguments?.getString("trackTime") ?: "0:00"
-            val artwork = backStackEntry.arguments?.getString("artworkUrl100")
-            val appTrack = AppTrack(tId, tName, aName, time, artwork)
-            val factory = PlaylistViewModelFactory(playlistsRepository, tracksLocalRepository)
-            val vm: PlaylistViewModel = viewModel(factory = factory)
+            val args = backStackEntry.arguments
+            val trackId = args?.getLong("trackId") ?: 0L
+            val trackName = args?.getString("trackName") ?: ""
+            val artistName = args?.getString("artistName") ?: ""
+            val trackTime = args?.getString("trackTime") ?: "0:00"
+            val artworkUrl = args?.getString("artworkUrl100")
+            val appTrack = AppTrack(trackId, trackName, artistName, trackTime, artworkUrl)
+            val viewModelFactory = PlaylistViewModelFactory(playlistsRepository, localTracksRepository)
+            val playlistViewModel: PlaylistViewModel = viewModel(factory = viewModelFactory)
             TrackDetailsScreen(
                 appTrack = appTrack,
-                playlistViewModel = vm,
-                onBackClick = { navController.popBackStack() },
+                playlistViewModel = playlistViewModel,
+                onBack = { navController.popBackStack() },
                 isDarkTheme = isDarkTheme
             )
         }
+        // Экран избранных
         composable(Screen.FAVORITES.name) {
-            val factory = FavoritesViewModelFactory(tracksLocalRepository)
-            val vm: FavoritesViewModel = viewModel(factory = factory)
+            val viewModelFactory = FavoritesViewModelFactory(localTracksRepository)
+            val favoritesViewModel: FavoritesViewModel = viewModel(factory = viewModelFactory)
             FavoritesScreen(
-                viewModel = vm,
-                onBackClick = { navController.popBackStack() },
-                onTrackClick = { track ->
+                viewModel = favoritesViewModel,
+                onBackNavigation = { navController.popBackStack() },
+                onTrackSelected = { track ->
                     navController.navigate(
                         "${Screen.TRACK_DETAILS.name}/" +
                                 "${track.trackId}/" +
@@ -136,19 +144,20 @@ fun PlaylistNavHost(
                                 "${Uri.encode(track.artworkUrl100)}"
                     )
                 },
-                isDarkTheme = isDarkTheme
+                darkThemeEnabled = isDarkTheme
             )
         }
+        // Детали плейлиста
         composable(
             route = "${Screen.PLAYLIST_DETAILS.name}/{playlistId}",
             arguments = listOf(navArgument("playlistId") { type = NavType.LongType })
         ) { backStackEntry ->
             val playlistId = backStackEntry.arguments?.getLong("playlistId") ?: 0L
-            val factory = PlaylistViewModelFactory(playlistsRepository, tracksLocalRepository)
-            val vm: PlaylistViewModel = viewModel(factory = factory)
+            val viewModelFactory = PlaylistViewModelFactory(playlistsRepository, localTracksRepository)
+            val playlistViewModel: PlaylistViewModel = viewModel(factory = viewModelFactory)
             PlaylistDetailsScreen(
                 playlistId = playlistId,
-                viewModel = vm,
+                viewModel = playlistViewModel,
                 onBackClick = { navController.popBackStack() },
                 onTrackClick = { track ->
                     navController.navigate(

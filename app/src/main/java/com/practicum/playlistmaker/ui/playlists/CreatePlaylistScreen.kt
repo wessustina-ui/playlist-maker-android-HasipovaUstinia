@@ -48,13 +48,13 @@ fun CreatePlaylistScreen(
     var description by remember { mutableStateOf(descriptionPlaceholder) }
     var nameFocused by remember { mutableStateOf(false) }
     var descriptionFocused by remember { mutableStateOf(false) }
-    val coverImageUriString: String? by viewModel.coverImageUri.collectAsState(null)
+    val coverImageUriString: String? by viewModel.imageUriFlow.collectAsState(null)
     val context = LocalContext.current
     val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         uri?.let {
             val localPath = saveImageToInternalStorage(context, it)
             localPath?.let { path ->
-                viewModel.setCoverImageUri(path)
+                viewModel.updateCoverImageUri(path)
             }
         }
     }
@@ -84,7 +84,7 @@ fun CreatePlaylistScreen(
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_left),
+                        painter = painterResource(id = R.drawable.ic_left_arrow),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = textColor
@@ -126,7 +126,7 @@ fun CreatePlaylistScreen(
                         contentScale = ContentScale.Crop
                     )
                 } ?: Image(
-                    painter = painterResource(id = R.drawable.ic_add_photo),
+                    painter = painterResource(id = R.drawable.ic_insert_image),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     colorFilter = ColorFilter.tint(borderColor)
@@ -244,7 +244,7 @@ fun CreatePlaylistScreen(
                 scope.launch {
                     if (name.isNotBlank() && name != namePlaceholder) {
                         val desc = if (description == descriptionPlaceholder) "" else description
-                        viewModel.createNewPlaylist(name.trim(), desc.trim())
+                        viewModel.addPlaylist(name.trim(), desc.trim())
                         onSaved()
                     }
                 }

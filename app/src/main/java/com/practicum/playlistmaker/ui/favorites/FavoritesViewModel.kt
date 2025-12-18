@@ -17,7 +17,7 @@ class FavoritesViewModel(
 
     fun loadFavorites() {
         viewModelScope.launch {
-            tracksLocalRepository.getFavoriteTracks().collectLatest { favorites ->
+            tracksLocalRepository.fetchFavoriteTracks().collectLatest { favorites ->
                 _favoriteList.value = favorites
             }
         }
@@ -25,7 +25,7 @@ class FavoritesViewModel(
 
     fun toggleFavorite(track: Track, isFavorite: Boolean) {
         viewModelScope.launch {
-            tracksLocalRepository.updateTrackFavoriteStatus(track, isFavorite)
+            tracksLocalRepository.setTrackFavoriteStatus(track, isFavorite)
         }
     }
 }

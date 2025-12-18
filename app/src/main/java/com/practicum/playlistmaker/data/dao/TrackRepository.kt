@@ -10,22 +10,23 @@ import com.practicum.playlistmaker.data.entity.TrackEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TrackDao {
+interface TrackRepository {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertTrack(track: TrackEntity)
+    suspend fun addTrack(track: TrackEntity)
 
     @Update
-    suspend fun updateTrack(track: TrackEntity)
+    suspend fun refreshTrack(track: TrackEntity)
 
     @Delete
-    suspend fun deleteTrack(track: TrackEntity)
+    suspend fun removeTrack(track: TrackEntity)
 
     @Query("SELECT * FROM tracks WHERE isFavorite = 1")
-    fun getFavoriteTracks(): Flow<List<TrackEntity>>
+    fun fetchFavoriteTracks(): Flow<List<TrackEntity>>
 
     @Query("SELECT * FROM tracks WHERE trackId = :trackId")
-    fun getTrackById(trackId: Long): Flow<TrackEntity?>
+    fun fetchTrackById(trackId: Long): Flow<TrackEntity?>
 
     @Query("SELECT CAST(COUNT(*) AS LONG) FROM playlist_track_cross_ref WHERE trackId = :trackId")
-    suspend fun countPlaylistsForTrack(trackId: Long): Long
+    suspend fun getPlaylistCountForTrack(trackId: Long): Long
 }

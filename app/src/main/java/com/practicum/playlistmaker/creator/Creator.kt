@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object Creator {
     private const val BASE_URL = "https://itunes.apple.com"
+
     private val apiService: ITunesApiService by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -27,26 +28,26 @@ object Creator {
             .create(ITunesApiService::class.java)
     }
 
-    fun provideTracksRepository(): TracksRepository {
+    fun getTracksRepository(): TracksRepository {
         val networkClient = RetrofitNetworkClient(apiService)
         return TracksRepositoryImpl(networkClient)
     }
 
-    fun provideAppDatabase(context: Context): AppDatabase {
+    fun getAppDatabase(context: Context): AppDatabase {
         return AppDatabase.getDatabase(context)
     }
 
-    fun providePlaylistsRepository(context: Context): PlaylistsRepository {
-        val db = provideAppDatabase(context)
-        return PlaylistsRepositoryImpl(db.playlistDao(), db.trackDao())
+    fun getPlaylistsRepository(context: Context): PlaylistsRepository {
+        val database = getAppDatabase(context)
+        return PlaylistsRepositoryImpl(database.playlistDao(), database.trackDao())
     }
 
-    fun provideTracksLocalRepository(context: Context): TracksLocalRepository {
-        val db = provideAppDatabase(context)
-        return TracksLocalRepositoryImpl(db.trackDao(), db.playlistDao())
+    fun getTracksLocalRepository(context: Context): TracksLocalRepository {
+        val database = getAppDatabase(context)
+        return TracksLocalRepositoryImpl(database.trackDao(), database.playlistDao())
     }
 
-    fun provideSearchHistoryRepository(context: Context): SearchHistoryRepository {
+    fun getSearchHistoryRepository(context: Context): SearchHistoryRepository {
         val preferences = SearchHistoryPreferences(context.dataStore)
         return SearchHistoryRepositoryImpl(preferences)
     }

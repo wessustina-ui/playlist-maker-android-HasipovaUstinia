@@ -54,7 +54,7 @@ import androidx.compose.ui.unit.sp
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.presentation.AppTrack
 import com.practicum.playlistmaker.presentation.SearchState
-import com.practicum.playlistmaker.ui.components.TrackRow
+import com.practicum.playlistmaker.ui.components.TrackItem
 import com.practicum.playlistmaker.ui.materialTheme.YS
 
 private val DividerPadding = 9.5.dp
@@ -93,7 +93,7 @@ fun SearchScreen(
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_arrow_left),
+                        painter = painterResource(id = R.drawable.ic_left_arrow),
                         contentDescription = stringResource(R.string.back),
                         modifier = Modifier.size(24.dp),
                         tint = textColor
@@ -144,11 +144,11 @@ fun SearchScreen(
                         items = currentState.tracks,
                         key = { it.trackId }
                     ) { track ->
-                        TrackRow(
+                        TrackItem(
                             track = track,
-                            isDarkTheme = isDarkTheme,
-                            onClick = { onTrackClick(track) },
-                            onLongClick = null
+                            darkTheme = isDarkTheme,
+                            onItemClick = { onTrackClick(track) },
+                            onItemLongPress = null
                         )
                     }
                 }
@@ -201,7 +201,7 @@ private fun HistoryList(
                         horizontalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_search_history),
+                            painter = painterResource(id = R.drawable.ic_glass_history),
                             contentDescription = null,
                             modifier = Modifier.size(16.dp),
                             tint = placeholderColor
@@ -234,7 +234,7 @@ private fun EmptyResultUI(isDarkTheme: Boolean, textColor: Color) {
         ) {
             Icon(
                 painter = painterResource(
-                    id = if (!isDarkTheme) R.drawable.ic_no_results_light else R.drawable.ic_no_results_dark
+                    id = if (!isDarkTheme) R.drawable.ic_error_light else R.drawable.ic_error_dark
                 ),
                 contentDescription = stringResource(R.string.no_results),
                 modifier = Modifier.size(120.dp),
@@ -275,7 +275,7 @@ private fun ErrorUI(
         ) {
             Icon(
                 painter = painterResource(
-                    id = if (!isDarkTheme) R.drawable.ic_search_failed_light else R.drawable.ic_search_failed_dark
+                    id = if (!isDarkTheme) R.drawable.ic_glass_failed_light else R.drawable.ic_glass_failed_dark
                 ),
                 contentDescription = null,
                 modifier = Modifier.size(120.dp),
@@ -370,7 +370,7 @@ private fun SearchFieldContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_search_16),
+            painter = painterResource(id = R.drawable.ic_glass),
             contentDescription = stringResource(R.string.search),
             tint = placeholderColor,
             modifier = Modifier
@@ -421,7 +421,7 @@ private fun SearchFieldContent(
         }
         if (query.isNotEmpty()) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_clear_16),
+                painter = painterResource(id = R.drawable.ic_reset),
                 contentDescription = stringResource(R.string.clear),
                 tint = placeholderColor,
                 modifier = Modifier

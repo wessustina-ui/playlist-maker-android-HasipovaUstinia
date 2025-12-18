@@ -5,18 +5,7 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
@@ -39,6 +28,7 @@ import androidx.core.net.toUri
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.ui.materialTheme.YS
 
+// Цветовые константы для светлой темы
 private val White = Color.White
 private val Black = Color.Black
 private val ScreenBackgroundLight = White
@@ -47,6 +37,8 @@ private val ListTextLight = Black
 private val IconTintLight = Color(0xFFAEAFB4)
 private val LightTrack = Color(0xFFE6E8EB)
 private val LightKnob = Color(0xFFAEAFB4)
+
+// Цветовые константы для тёмной темы
 private val ScreenBackgroundDark = Color(0xFF1A1B22)
 private val ListBackgroundDark = ScreenBackgroundDark
 private val ListTextDark = White
@@ -86,8 +78,7 @@ fun CustomSwitch(
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
-                .width(35.dp)
-                .height(12.dp)
+                .fillMaxSize()
                 .clip(MaterialTheme.shapes.small)
                 .background(trackColor)
         )
@@ -115,11 +106,13 @@ fun SettingsScreen(
     val supportSubject = stringResource(R.string.support_subject)
     val supportBody = stringResource(R.string.support_body)
     val agreementUrl = stringResource(R.string.user_agreement_url)
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(screenBg)
     ) {
+        // Заголовок и кнопка назад
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -129,7 +122,7 @@ fun SettingsScreen(
         ) {
             IconButton(onClick = onBackClick) {
                 Icon(
-                    painter = painterResource(R.drawable.ic_arrow_left),
+                    painter = painterResource(R.drawable.ic_left_arrow),
                     contentDescription = stringResource(R.string.back),
                     modifier = Modifier.size(24.dp),
                     tint = titleColor
@@ -145,6 +138,8 @@ fun SettingsScreen(
                 color = titleColor
             )
         }
+
+        // Список настроек
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 8.dp)
@@ -191,7 +186,7 @@ fun SettingsScreen(
             item {
                 SettingsMenuItem(
                     title = stringResource(R.string.settings_item_agreement),
-                    iconResId = R.drawable.ic_chevron_right,
+                    iconResId = R.drawable.ic_chevron_r,
                     onClick = {
                         val agreementIntent = Intent(Intent.ACTION_VIEW, agreementUrl.toUri())
                         context.startActivity(agreementIntent)
@@ -216,6 +211,7 @@ fun SettingsMenuItem(
     val textColor = if (!isDarkTheme) ListTextLight else ListTextDark
     val iconColor = if (!isDarkTheme) IconTintLight else IconTintDark
     val itemBackground = if (!isDarkTheme) ListBackgroundLight else ListBackgroundDark
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,6 +221,7 @@ fun SettingsMenuItem(
             .padding(start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        // Текст пункта
         Text(
             text = title,
             fontFamily = YS,
@@ -234,6 +231,7 @@ fun SettingsMenuItem(
             color = textColor,
             modifier = Modifier.weight(1f)
         )
+        // Переключатель или иконка
         if (isSwitch) {
             CustomSwitch(
                 checked = switchChecked,

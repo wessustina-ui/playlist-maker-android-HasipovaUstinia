@@ -9,6 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,29 +29,27 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
 import androidx.core.net.toUri
 
 @Composable
-fun PlaylistRow(
+fun PlaylistItem(
     playlist: Playlist,
-    textColor: Color,
-    secondaryColor: Color,
-    chevronTint: Color? = null,
-    backgroundColor: Color,
-    onClick: () -> Unit,
-    onLongClick: () -> Unit = {},
-    showChevron: Boolean = true
+    primaryTextColor: Color,
+    secondaryTextColor: Color,
+    chevronColor: Color? = null,
+    background: Color,
+    onItemClick: () -> Unit,
+    onItemLongPress: () -> Unit = {},
+    displayChevron: Boolean = true
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(61.dp)
-            .background(backgroundColor)
+            .background(background)
             .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick
+                onClick = onItemClick,
+                onLongClick = onItemLongPress
             )
             .padding(horizontal = 13.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -62,9 +62,9 @@ fun PlaylistRow(
                 contentScale = ContentScale.Crop
             )
         } ?: Image(
-            painter = painterResource(R.drawable.ic_add_photo),
+            painter = painterResource(R.drawable.ic_insert_image),
             contentDescription = null,
-            colorFilter = ColorFilter.tint(secondaryColor),
+            colorFilter = ColorFilter.tint(secondaryTextColor),
             modifier = Modifier.size(45.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -75,7 +75,7 @@ fun PlaylistRow(
                 fontWeight = FontWeight.Normal,
                 fontSize = 16.sp,
                 lineHeight = 19.sp,
-                color = textColor,
+                color = primaryTextColor,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -86,15 +86,15 @@ fun PlaylistRow(
                 fontWeight = FontWeight.Normal,
                 fontSize = 11.sp,
                 lineHeight = 13.sp,
-                color = secondaryColor
+                color = secondaryTextColor
             )
         }
-        if (showChevron) {
+        if (displayChevron) {
             Icon(
-                painter = painterResource(R.drawable.ic_chevron_right),
+                painter = painterResource(R.drawable.ic_chevron_r),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp),
-                tint = chevronTint ?: secondaryColor
+                tint = chevronColor ?: secondaryTextColor
             )
         }
     }

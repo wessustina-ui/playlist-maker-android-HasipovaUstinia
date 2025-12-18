@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.data.repository
 
-import com.practicum.playlistmaker.data.dao.PlaylistDao
-import com.practicum.playlistmaker.data.dao.TrackDao
+import com.practicum.playlistmaker.data.dao.PlaylistRepository
 import com.practicum.playlistmaker.data.entity.PlaylistEntity
 import com.practicum.playlistmaker.domain.Playlist
 import com.practicum.playlistmaker.domain.PlaylistsRepository
@@ -12,46 +11,46 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class PlaylistsRepositoryImpl(
-    private val playlistDao: PlaylistDao,
-    private val trackDao: TrackDao
+    private val playlistDao: PlaylistRepository
 ) : PlaylistsRepository {
-    override fun getAllPlaylists(): Flow<List<Playlist>> = playlistDao.getAllPlaylists().map { playlistsWithTracks ->
-        playlistsWithTracks.map { pwt ->
+
+    override fun fetchAllPlaylists(): Flow<List<Playlist>> = playlistDao.fetchAllPlaylists().map { playlistsWithTracks ->
+        playlistsWithTracks.map { playlistWithTracks ->
             Playlist(
-                id = pwt.playlist.id,
-                name = pwt.playlist.name,
-                description = pwt.playlist.description,
-                tracks = pwt.tracks.map { te ->
+                id = playlistWithTracks.playlist.id,
+                name = playlistWithTracks.playlist.name,
+                description = playlistWithTracks.playlist.description,
+                tracks = playlistWithTracks.tracks.map { trackEntity ->
                     Track(
-                        trackId = te.trackId,
-                        trackName = te.trackName,
-                        artistName = te.artistName,
-                        trackTimeMillis = te.trackTimeMillis,
-                        artworkUrl100 = te.artworkUrl100,
-                        previewUrl = te.previewUrl,
-                        favorite = te.isFavorite
+                        trackId = trackEntity.trackId,
+                        trackName = trackEntity.trackName,
+                        artistName = trackEntity.artistName,
+                        trackTimeMillis = trackEntity.trackTimeMillis,
+                        artworkUrl100 = trackEntity.artworkUrl100,
+                        previewUrl = trackEntity.previewUrl,
+                        favorite = trackEntity.isFavorite
                     )
                 },
-                coverImageUri = pwt.playlist.coverImageUri
+                coverImageUri = playlistWithTracks.playlist.coverImageUri
             )
         }
     }
 
-    override fun getPlaylist(playlistId: Long): Flow<Playlist?> = playlistDao.getPlaylist(playlistId).map { pwt ->
-        pwt?.let {
+    override fun fetchPlaylistById(id: Long): Flow<Playlist?> = playlistDao.fetchPlaylistById(id).map { playlistWithTracks ->
+        playlistWithTracks?.let {
             Playlist(
                 id = it.playlist.id,
                 name = it.playlist.name,
                 description = it.playlist.description,
-                tracks = it.tracks.map { te ->
+                tracks = it.tracks.map { trackEntity ->
                     Track(
-                        trackId = te.trackId,
-                        trackName = te.trackName,
-                        artistName = te.artistName,
-                        trackTimeMillis = te.trackTimeMillis,
-                        artworkUrl100 = te.artworkUrl100,
-                        previewUrl = te.previewUrl,
-                        favorite = te.isFavorite
+                        trackId = trackEntity.trackId,
+                        trackName = trackEntity.trackName,
+                        artistName = trackEntity.artistName,
+                        trackTimeMillis = trackEntity.trackTimeMillis,
+                        artworkUrl100 = trackEntity.artworkUrl100,
+                        previewUrl = trackEntity.previewUrl,
+                        favorite = trackEntity.isFavorite
                     )
                 },
                 coverImageUri = it.playlist.coverImageUri
@@ -59,12 +58,12 @@ class PlaylistsRepositoryImpl(
         }
     }
 
-    override suspend fun addNewPlaylist(name: String, description: String, coverImageUri: String?) = withContext(Dispatchers.IO) {
-        playlistDao.insertPlaylist(PlaylistEntity(name = name, description = description, coverImageUri = coverImageUri))
+    override suspend fun createPlaylist(name: String, description: String, coverUri: String?) = withContext(Dispatchers.IO) {
+        playlistDao.savePlaylist(PlaylistEntity(name = name, description = description, coverImageUri = coverUri))
     }
 
-    override suspend fun deletePlaylistById(id: Long) = withContext(Dispatchers.IO) {
-        playlistDao.deleteCrossRefsForPlaylist(id)
-        playlistDao.deletePlaylist(PlaylistEntity(id = id, name = "", description = ""))
+    override suspend fun removePlaylist(id: Long) = withContext(Dispatchers.IO) {
+        playlistDao.clearCrossRefsForPlaylist(id)
+        playlistDao.removePlaylist(PlaylistEntity(id = id, name = "", description = ""))
     }
 }
