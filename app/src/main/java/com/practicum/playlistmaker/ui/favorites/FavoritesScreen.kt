@@ -45,7 +45,6 @@ fun FavoritesScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            // Header Row
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -71,8 +70,6 @@ fun FavoritesScreen(
                     color = textColor
                 )
             }
-
-            // Empty State
             if (favoriteTracks.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -109,7 +106,6 @@ fun FavoritesScreen(
                     }
                 }
             } else {
-                // List of favorite tracks
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {

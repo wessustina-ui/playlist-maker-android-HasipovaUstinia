@@ -28,7 +28,6 @@ import androidx.core.net.toUri
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.ui.materialTheme.YS
 
-// Цветовые константы для светлой темы
 private val White = Color.White
 private val Black = Color.Black
 private val ScreenBackgroundLight = White
@@ -38,7 +37,6 @@ private val IconTintLight = Color(0xFFAEAFB4)
 private val LightTrack = Color(0xFFE6E8EB)
 private val LightKnob = Color(0xFFAEAFB4)
 
-// Цветовые константы для тёмной темы
 private val ScreenBackgroundDark = Color(0xFF1A1B22)
 private val ListBackgroundDark = ScreenBackgroundDark
 private val ListTextDark = White
@@ -112,7 +110,6 @@ fun SettingsScreen(
             .fillMaxSize()
             .background(screenBg)
     ) {
-        // Заголовок и кнопка назад
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -138,8 +135,6 @@ fun SettingsScreen(
                 color = titleColor
             )
         }
-
-        // Список настроек
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 8.dp)
@@ -221,7 +216,6 @@ fun SettingsMenuItem(
             .padding(start = 16.dp, end = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Текст пункта
         Text(
             text = title,
             fontFamily = YS,
@@ -231,7 +225,6 @@ fun SettingsMenuItem(
             color = textColor,
             modifier = Modifier.weight(1f)
         )
-        // Переключатель или иконка
         if (isSwitch) {
             CustomSwitch(
                 checked = switchChecked,

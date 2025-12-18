@@ -48,13 +48,11 @@ fun TrackDetailsScreen(
     var showSheet by remember { mutableStateOf(false) }
     var isFavorite by remember { mutableStateOf(false) }
 
-    // Инициализация статуса избранного при загрузке
     LaunchedEffect(appTrack) {
         val existing = playlistViewModel.fetchTrackById(appTrack.trackId).firstOrNull()
         isFavorite = existing?.favorite ?: false
     }
 
-    // Цветовая схема
     val bgColor = if (isDarkTheme) Color(0xFF1A1B22) else Color.White
     val textColor = if (isDarkTheme) Color.White else Color(0xFF1A1B22)
     val secondaryTextColor = if (isDarkTheme) Color.White.copy(alpha = 0.84f) else Color(0xFF1A1B22).copy(alpha = 0.7f)
@@ -71,7 +69,6 @@ fun TrackDetailsScreen(
     ) {
         LazyColumn {
             item {
-                // Кнопка назад
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
@@ -90,7 +87,6 @@ fun TrackDetailsScreen(
                 }
                 Spacer(modifier = Modifier.height(26.dp))
 
-                // Изображение трека
                 val artworkUrl = appTrack.artworkUrl100
                 val lowResUrl = ImageUtils.getArtworkUrl(artworkUrl, "100x100")
                 val highResUrl = ImageUtils.getArtworkUrl(artworkUrl, "1000x1000") ?: artworkUrl
@@ -112,8 +108,7 @@ fun TrackDetailsScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Название и артист
-                var textHeightPx by remember { mutableStateOf(0) }
+                var textHeightPx by remember { mutableIntStateOf(0) }
                 val density = LocalDensity.current.density
                 val fixedTop = 418f
                 val minSpacer = 32f
@@ -145,7 +140,6 @@ fun TrackDetailsScreen(
                 }
                 Spacer(modifier = Modifier.height(spacerHeight))
 
-                // Кнопки добавления и избранного
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -195,7 +189,6 @@ fun TrackDetailsScreen(
                     }
                 }
 
-                // Информация о длительности
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -226,7 +219,6 @@ fun TrackDetailsScreen(
             }
         }
 
-        // Bottom sheet для выбора плейлиста
         if (showSheet) {
             ModalBottomSheet(
                 onDismissRequest = { showSheet = false },
@@ -258,7 +250,6 @@ fun TrackDetailsScreen(
                     }
                     Spacer(modifier = Modifier.height(23.dp))
 
-                    // Заголовок
                     Text(
                         text = stringResource(R.string.add_to_playlist),
                         fontFamily = YS,
@@ -273,7 +264,6 @@ fun TrackDetailsScreen(
                     )
                     Spacer(modifier = Modifier.height(23.dp))
 
-                    // Список плейлистов
                     val playlists by playlistViewModel.allPlaylistsFlow.collectAsState(emptyList())
                     LazyColumn(
                         modifier = Modifier.weight(1f),
@@ -309,7 +299,6 @@ fun TrackDetailsScreen(
     }
 }
 
-// Вспомогательная функция для парсинга времени
 private fun parseTimeToMillis(trackTime: String): Long {
     val parts = trackTime.split(":")
     val minutes = parts.getOrNull(0)?.toIntOrNull() ?: 0

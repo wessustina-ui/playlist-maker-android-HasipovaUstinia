@@ -13,7 +13,7 @@ import kotlinx.coroutines.withContext
 
 class PlaylistsRepositoryImpl(
     private val playlistDao: PlaylistRepository,
-    trackDao: TrackRepository
+    trackDao: TrackRepository,
 ) : PlaylistsRepository {
 
     override fun fetchAllPlaylists(): Flow<List<Playlist>> = playlistDao.fetchAllPlaylists().map { playlistsWithTracks ->

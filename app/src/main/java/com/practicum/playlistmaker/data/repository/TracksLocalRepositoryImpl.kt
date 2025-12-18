@@ -53,7 +53,7 @@ class TracksLocalRepositoryImpl(
                     trackTimeMillis = track.trackTimeMillis,
                     artworkUrl100 = track.artworkUrl100,
                     previewUrl = track.previewUrl,
-                    isFavorite = isFavorite
+                    isFavorite = true
                 )
                 trackDao.addTrack(existing)
             }
