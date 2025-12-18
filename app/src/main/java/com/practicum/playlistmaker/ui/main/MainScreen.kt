@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.sp
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.ui.materialTheme.YS
 
-// Цвета для выделения
 private val PrimaryBlue = Color(0xFF3772E7)
 private val NeutralGray = Color(0xFFAEAFB4)
 private val LightSurface = Color.White
@@ -37,7 +36,6 @@ fun MainScreen(
 ) {
     val chevronColor = if (darkThemeEnabled) TitleColorLight else NeutralGray
     Box(modifier = Modifier.fillMaxSize()) {
-        // Заголовок
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -54,7 +52,6 @@ fun MainScreen(
             )
         }
         val containerBackground = if (darkThemeEnabled) DarkSurface else LightSurface
-        // Основная часть с меню
         Box(
             modifier = Modifier
                 .fillMaxSize()

@@ -127,7 +127,6 @@ fun PlaylistDetailsScreen(
                 .padding(innerPadding)
         ) {
             item {
-                // ------ COVER -------
 
                 val coverContainerSize = 360.dp
                 val defaultThumbSize = 100.dp
@@ -165,7 +164,6 @@ fun PlaylistDetailsScreen(
                 }
                 Spacer(Modifier.height(24.dp))
 
-                // ------ TITLE ------
                 Text(
                     text = pl.name,
                     modifier = Modifier.padding(horizontal = 16.dp),
@@ -176,7 +174,6 @@ fun PlaylistDetailsScreen(
                 )
                 Spacer(Modifier.height(12.dp))
 
-                // ------ DESCRIPTION ------
                 if (pl.description.isNotBlank()) {
                     Text(
                         text = pl.description,
@@ -189,7 +186,6 @@ fun PlaylistDetailsScreen(
                     Spacer(Modifier.height(8.dp))
                 }
 
-                // ------ MINUTES + TRACKS ------
                 val totalMinutes = pl.tracks.sumOf { it.trackTimeMillis } / 60000
                 val minutesCount = totalMinutes.toInt()
                 Row(
@@ -219,7 +215,6 @@ fun PlaylistDetailsScreen(
                 }
                 Spacer(Modifier.height(16.dp))
 
-                // ------ MORE ICON -> OPEN SHEET ------
                 IconButton(
                     onClick = { showBottomSheet = true },
                     modifier = Modifier
@@ -238,7 +233,6 @@ fun PlaylistDetailsScreen(
         }
     }
 
-    // === MODAL BOTTOM SHEET ===
     if (showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = { showBottomSheet = false },
@@ -265,7 +259,6 @@ fun PlaylistDetailsScreen(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // PLAYLIST INFO ITEM
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -317,7 +310,6 @@ fun PlaylistDetailsScreen(
                     }
                 }
 
-                // SHARE
                 Text(
                     text = stringResource(R.string.share),
                     fontFamily = YS,
@@ -331,7 +323,6 @@ fun PlaylistDetailsScreen(
                     color = sheetText
                 )
 
-                // EDIT
                 Text(
                     text = stringResource(R.string.edit_playlist),
                     fontFamily = YS,
@@ -345,7 +336,6 @@ fun PlaylistDetailsScreen(
                     color = sheetText
                 )
 
-                // DELETE
                 Text(
                     text = stringResource(R.string.delete_playlist),
                     fontFamily = YS,
@@ -366,7 +356,6 @@ fun PlaylistDetailsScreen(
         }
     }
 
-    // === DELETE PLAYLIST DIALOG ===
     if (showDeleteDialog) {
         AlertDialog(
             shape = RoundedCornerShape(4.dp),
@@ -414,7 +403,6 @@ fun PlaylistDetailsScreen(
         )
     }
 
-    // === DELETE TRACK DIALOG ===
     if (showDeleteTrackDialog && selectedTrack != null) {
         AlertDialog(
             shape = RoundedCornerShape(4.dp),

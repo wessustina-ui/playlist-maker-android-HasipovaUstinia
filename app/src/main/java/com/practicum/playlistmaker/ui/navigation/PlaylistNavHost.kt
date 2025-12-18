@@ -39,7 +39,6 @@ fun PlaylistNavHost(
 ) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = Screen.MAIN.name) {
-        // Главный экран
         composable(Screen.MAIN.name) {
             MainScreen(
                 onSearchNavigation = { navController.navigate(Screen.SEARCH.name) },
@@ -49,7 +48,6 @@ fun PlaylistNavHost(
                 darkThemeEnabled = isDarkTheme
             )
         }
-        // Экран поиска
         composable(Screen.SEARCH.name) {
             val viewModelFactory = SearchViewModelFactory(searchRepository, searchHistoryRepository)
             val searchViewModel: SearchViewModel = viewModel(factory = viewModelFactory)
@@ -69,7 +67,6 @@ fun PlaylistNavHost(
                 }
             )
         }
-        // Экран настроек
         composable(Screen.SETTINGS.name) {
             SettingsScreen(
                 isDarkTheme = isDarkTheme,
@@ -77,7 +74,6 @@ fun PlaylistNavHost(
                 onBackClick = { navController.popBackStack() }
             )
         }
-        // Экран плейлистов
         composable(Screen.PLAYLISTS.name) {
             val viewModelFactory = PlaylistViewModelFactory(playlistsRepository, localTracksRepository)
             val playlistViewModel: PlaylistViewModel = viewModel(factory = viewModelFactory)
@@ -89,7 +85,6 @@ fun PlaylistNavHost(
                 isDarkTheme = isDarkTheme
             )
         }
-        // Создание нового плейлиста
         composable(Screen.CREATE_PLAYLIST.name) {
             val viewModelFactory = PlaylistViewModelFactory(playlistsRepository, localTracksRepository)
             val playlistViewModel: PlaylistViewModel = viewModel(factory = viewModelFactory)
@@ -100,7 +95,6 @@ fun PlaylistNavHost(
                 isDarkTheme = isDarkTheme
             )
         }
-        // Детали трека
         composable(
             route = "${Screen.TRACK_DETAILS.name}/{trackId}/{trackName}/{artistName}/{trackTime}/{artworkUrl100}",
             arguments = listOf(
@@ -127,7 +121,6 @@ fun PlaylistNavHost(
                 isDarkTheme = isDarkTheme
             )
         }
-        // Экран избранных
         composable(Screen.FAVORITES.name) {
             val viewModelFactory = FavoritesViewModelFactory(localTracksRepository)
             val favoritesViewModel: FavoritesViewModel = viewModel(factory = viewModelFactory)
@@ -147,7 +140,6 @@ fun PlaylistNavHost(
                 darkThemeEnabled = isDarkTheme
             )
         }
-        // Детали плейлиста
         composable(
             route = "${Screen.PLAYLIST_DETAILS.name}/{playlistId}",
             arguments = listOf(navArgument("playlistId") { type = NavType.LongType })
