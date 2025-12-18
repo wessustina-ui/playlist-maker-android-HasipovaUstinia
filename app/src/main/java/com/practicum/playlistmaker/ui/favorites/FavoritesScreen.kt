@@ -16,28 +16,26 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.presentation.AppTrack
-import com.practicum.playlistmaker.ui.components.TrackRow
+import com.practicum.playlistmaker.ui.components.TrackItem
 import com.practicum.playlistmaker.ui.materialTheme.YS
 import androidx.compose.ui.graphics.Color
 import com.practicum.playlistmaker.presentation.toAppTrack
 
-
 @Composable
 fun FavoritesScreen(
     viewModel: FavoritesViewModel,
-    onBackClick: () -> Unit,
-    onTrackClick: (AppTrack) -> Unit,
-    isDarkTheme: Boolean
+    onBackNavigation: () -> Unit,
+    onTrackSelected: (AppTrack) -> Unit,
+    darkThemeEnabled: Boolean
 ) {
-    val favoriteList by viewModel.favoriteList.collectAsState(emptyList())
+    val favoriteTracks by viewModel.favoriteList.collectAsState(emptyList())
 
     LaunchedEffect(Unit) {
         viewModel.loadFavorites()
     }
 
-    val backgroundColor = if (isDarkTheme) Color(0xFF1A1B22) else Color.White
-    val textColor = if (isDarkTheme) Color.White else Color(0xFF1A1B22)
-    Color(0xFFAEAFB4)
+    val backgroundColor = if (darkThemeEnabled) Color(0xFF1A1B22) else Color.White
+    val textColor = if (darkThemeEnabled) Color.White else Color(0xFF1A1B22)
 
     Box(
         modifier = Modifier
@@ -47,7 +45,7 @@ fun FavoritesScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-
+            // Header Row
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -55,9 +53,9 @@ fun FavoritesScreen(
                     .height(56.dp)
                     .padding(start = 16.dp)
             ) {
-                IconButton(onClick = onBackClick) {
+                IconButton(onClick = onBackNavigation) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_arrow_left),
+                        painter = painterResource(R.drawable.ic_left_arrow),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = textColor
@@ -74,7 +72,8 @@ fun FavoritesScreen(
                 )
             }
 
-            if (favoriteList.isEmpty()) {
+            // Empty State
+            if (favoriteTracks.isEmpty()) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.TopCenter
@@ -84,13 +83,12 @@ fun FavoritesScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
-
-                        val emptyIcon =
-                            if (isDarkTheme) R.drawable.ic_no_results_dark
-                            else R.drawable.ic_no_results_light
+                        val emptyIconRes =
+                            if (darkThemeEnabled) R.drawable.ic_error_dark
+                            else R.drawable.ic_error_light
 
                         Icon(
-                            painter = painterResource(emptyIcon),
+                            painter = painterResource(emptyIconRes),
                             contentDescription = null,
                             modifier = Modifier.size(120.dp),
                             tint = Color.Unspecified
@@ -111,16 +109,16 @@ fun FavoritesScreen(
                     }
                 }
             } else {
+                // List of favorite tracks
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    itemsIndexed(favoriteList) { _, track ->
-
-                        TrackRow(
+                    itemsIndexed(favoriteTracks) { _, track ->
+                        TrackItem(
                             track = track.toAppTrack(),
-                            isDarkTheme = isDarkTheme,
-                            onClick = { onTrackClick(track.toAppTrack()) },
-                            onLongClick = {
+                            darkTheme = darkThemeEnabled,
+                            onItemClick = { onTrackSelected(track.toAppTrack()) },
+                            onItemLongPress = {
                                 viewModel.toggleFavorite(track, false)
                             }
                         )

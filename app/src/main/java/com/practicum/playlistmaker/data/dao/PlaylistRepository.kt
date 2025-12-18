@@ -25,29 +25,28 @@ data class PlaylistWithTracks(
 )
 
 @Dao
-interface PlaylistDao {
+interface PlaylistRepository {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertPlaylist(playlist: PlaylistEntity)
+    suspend fun savePlaylist(playlist: PlaylistEntity)
 
     @Delete
-    suspend fun deletePlaylist(playlist: PlaylistEntity)
+    suspend fun removePlaylist(playlist: PlaylistEntity)
 
     @Transaction
     @Query("SELECT * FROM playlists")
-    fun getAllPlaylists(): Flow<List<PlaylistWithTracks>>
+    fun fetchAllPlaylists(): Flow<List<PlaylistWithTracks>>
 
     @Transaction
     @Query("SELECT * FROM playlists WHERE id = :playlistId")
-    fun getPlaylist(playlistId: Long): Flow<PlaylistWithTracks?>
+    fun fetchPlaylistById(playlistId: Long): Flow<PlaylistWithTracks?>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertCrossRef(crossRef: PlaylistTrackCrossRef)
+    suspend fun addCrossReference(crossRef: PlaylistTrackCrossRef)
 
     @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :id")
-    suspend fun deleteCrossRefsForPlaylist(id: Long)
+    suspend fun clearCrossRefsForPlaylist(id: Long)
 
     @Query("DELETE FROM playlist_track_cross_ref WHERE playlistId = :playlistId AND trackId = :trackId")
-    suspend fun deleteSpecificCrossRef(playlistId: Long, trackId: Long)
-
-
+    suspend fun removeSpecificCrossRef(playlistId: Long, trackId: Long)
 }

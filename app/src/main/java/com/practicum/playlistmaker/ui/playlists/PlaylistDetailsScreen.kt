@@ -27,7 +27,6 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.domain.Playlist
 import com.practicum.playlistmaker.domain.Track
 import com.practicum.playlistmaker.presentation.AppTrack
-import com.practicum.playlistmaker.ui.components.TrackRow
 import com.practicum.playlistmaker.ui.materialTheme.YS
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import coil.request.ImageRequest
 import coil.size.Size
 import com.practicum.playlistmaker.presentation.toAppTrack
+import com.practicum.playlistmaker.ui.components.TrackItem
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,7 +56,7 @@ fun PlaylistDetailsScreen(
     val scope = rememberCoroutineScope()
 
     LaunchedEffect(playlistId) {
-        playlist = viewModel.getPlaylist(playlistId).firstOrNull()
+        playlist = viewModel.getPlaylistFlow(playlistId).firstOrNull()
     }
 
 
@@ -104,11 +104,11 @@ fun PlaylistDetailsScreen(
         sheetContent = {
             LazyColumn {
                 items(pl.tracks) { track ->
-                    TrackRow(
+                    TrackItem(
                         track = track.toAppTrack(),
-                        isDarkTheme = isDarkTheme,
-                        onClick = { onTrackClick(track.toAppTrack()) },
-                        onLongClick = {
+                        darkTheme = isDarkTheme,
+                        onItemClick = { onTrackClick(track.toAppTrack()) },
+                        onItemLongPress = {
                             selectedTrack = track
                             showDeleteTrackDialog = true
                         }
@@ -155,7 +155,7 @@ fun PlaylistDetailsScreen(
                         )
                     } ?: Image(
 
-                        painter = painterResource(id = R.drawable.ic_add_photo),
+                        painter = painterResource(id = R.drawable.ic_insert_image),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(grayColor),
                         modifier = Modifier
@@ -227,7 +227,7 @@ fun PlaylistDetailsScreen(
                         .size(24.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_more),
+                        painter = painterResource(id = R.drawable.ic_points),
                         contentDescription = null,
                         tint = mainText
                     )
@@ -283,7 +283,7 @@ fun PlaylistDetailsScreen(
                             contentScale = ContentScale.Crop
                         )
                     } ?: Image(
-                        painter = painterResource(id = R.drawable.ic_add_photo),
+                        painter = painterResource(id = R.drawable.ic_insert_image),
                         contentDescription = null,
                         colorFilter = ColorFilter.tint(sheetGray),
                         modifier = Modifier
@@ -385,7 +385,7 @@ fun PlaylistDetailsScreen(
             },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.deletePlaylistById(playlistId)
+                    viewModel.deletePlaylist(playlistId)
                     showDeleteDialog = false
                     onBackClick()
                 }) {
@@ -434,7 +434,7 @@ fun PlaylistDetailsScreen(
             confirmButton = {
                 TextButton(onClick = {
                     scope.launch {
-                        viewModel.deleteTrackFromPlaylist(selectedTrack!!.trackId, playlistId)
+                        viewModel.removeTrackFromPlaylist(selectedTrack!!.trackId, playlistId)
                     }
                     showDeleteTrackDialog = false
                 }) {

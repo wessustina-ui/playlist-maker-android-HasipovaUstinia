@@ -14,49 +14,51 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class PlaylistViewModel(
-    private val playlistsRepository: PlaylistsRepository,
-    private val tracksLocalRepository: TracksLocalRepository
+    private val playlistService: PlaylistsRepository,
+    private val localTrackRepo: TracksLocalRepository
 ) : ViewModel() {
-    val playlists: Flow<List<Playlist>> = playlistsRepository.getAllPlaylists().stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    private val _coverImageUri = MutableStateFlow<String?>(null)
-    val coverImageUri: Flow<String?> = _coverImageUri.asStateFlow()
+    val allPlaylistsFlow: Flow<List<Playlist>> = playlistService.fetchAllPlaylists()
+        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
 
-    fun setCoverImageUri(uri: String?) {
-        _coverImageUri.value = uri
+    private val _imageUriState = MutableStateFlow<String?>(null)
+    val imageUriFlow: Flow<String?> = _imageUriState.asStateFlow()
+
+    fun updateCoverImageUri(uri: String?) {
+        _imageUriState.value = uri
     }
 
-    fun getPlaylist(id: Long): Flow<Playlist?> = playlistsRepository.getPlaylist(id)
+    fun getPlaylistFlow(id: Long): Flow<Playlist?> = playlistService.fetchPlaylistById(id)
 
-    fun createNewPlaylist(name: String, description: String) {
+    fun addPlaylist(name: String, description: String) {
         viewModelScope.launch {
-            playlistsRepository.addNewPlaylist(name, description, _coverImageUri.value)
+            playlistService.createPlaylist(name, description, _imageUriState.value)
         }
     }
 
-    fun deletePlaylistById(id: Long) {
+    fun deletePlaylist(id: Long) {
         viewModelScope.launch {
-            playlistsRepository.deletePlaylistById(id)
+            playlistService.removePlaylist(id)
         }
     }
 
-    fun addTrackToPlaylist(track: Track, playlistId: Long) {
+    fun addTrackToExistingPlaylist(track: Track, playlistId: Long) {
         viewModelScope.launch {
-            tracksLocalRepository.insertTrackToPlaylist(track, playlistId)
+            localTrackRepo.addTrackToPlaylist(track, playlistId)
         }
     }
 
-    fun toggleFavorite(track: Track, isFavorite: Boolean) {
+    fun changeTrackFavoriteStatus(track: Track, isFavorite: Boolean) {
         viewModelScope.launch {
-            tracksLocalRepository.updateTrackFavoriteStatus(track, isFavorite)
+            localTrackRepo.setTrackFavoriteStatus(track, isFavorite)
         }
     }
 
-    fun getTrackById(trackId: Long): Flow<Track?> = tracksLocalRepository.getTrackById(trackId)
+    fun fetchTrackById(trackId: Long): Flow<Track?> = localTrackRepo.fetchTrackById(trackId)
 
-    fun deleteTrackFromPlaylist(trackId: Long, playlistId: Long) {
+    fun removeTrackFromPlaylist(trackId: Long, playlistId: Long) {
         viewModelScope.launch {
-            tracksLocalRepository.deleteTrackFromPlaylist(trackId, playlistId)
+            localTrackRepo.removeTrackFromPlaylist(trackId, playlistId)
         }
     }
 }

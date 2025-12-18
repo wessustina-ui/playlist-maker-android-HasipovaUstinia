@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.ui.materialTheme.YS
-import com.practicum.playlistmaker.ui.components.PlaylistRow
+import com.practicum.playlistmaker.ui.components.PlaylistItem
 
 @Composable
 fun PlaylistsScreen(
@@ -49,7 +49,7 @@ fun PlaylistsScreen(
     onBackClick: () -> Unit,
     isDarkTheme: Boolean
 ) {
-    val playlists by viewModel.playlists.collectAsState(emptyList())
+    val playlists by viewModel.allPlaylistsFlow.collectAsState(emptyList())
     var showDeleteDialog by remember { mutableStateOf(false) }
     var selectedPlaylistId by remember { mutableStateOf<Long?>(null) }
     var selectedPlaylistName by remember { mutableStateOf("") }
@@ -76,7 +76,7 @@ fun PlaylistsScreen(
             ) {
                 IconButton(onClick = onBackClick) {
                     Icon(
-                        painter = painterResource(R.drawable.ic_arrow_left),
+                        painter = painterResource(R.drawable.ic_left_arrow),
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = textColor
@@ -98,19 +98,19 @@ fun PlaylistsScreen(
                     .padding(top = 0.dp)
             ) {
                 items(playlists, key = { it.id }) { pl ->
-                    PlaylistRow(
+                    PlaylistItem(
                         playlist = pl,
-                        textColor = textColor,
-                        secondaryColor = borderColor,
-                        chevronTint = borderColor,
-                        backgroundColor = backgroundColor,
-                        onClick = { onOpenPlaylist(pl.id) },
-                        onLongClick = {
+                        primaryTextColor = textColor,
+                        secondaryTextColor = borderColor,
+                        chevronColor = borderColor,
+                        background = backgroundColor,
+                        onItemClick = { onOpenPlaylist(pl.id) },
+                        onItemLongPress = {
                             selectedPlaylistId = pl.id
                             selectedPlaylistName = pl.name
                             showDeleteDialog = true
                         },
-                        showChevron = true
+                        displayChevron = true
                     )
                 }
             }
@@ -127,7 +127,7 @@ fun PlaylistsScreen(
             elevation = FloatingActionButtonDefaults.elevation(0.dp)
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_add),
+                painter = painterResource(id = R.drawable.ic_plus_insert),
                 contentDescription = stringResource(R.string.create_playlist),
                 tint = Color.White,
                 modifier = Modifier.padding(13.dp)
@@ -157,7 +157,7 @@ fun PlaylistsScreen(
             },
             confirmButton = {
                 TextButton(onClick = {
-                    viewModel.deletePlaylistById(selectedPlaylistId!!)
+                    viewModel.deletePlaylist(selectedPlaylistId!!)
                     showDeleteDialog = false
                 }) {
                     Text(

@@ -20,16 +20,16 @@ class AppActivity : ComponentActivity() {
             val isDark = remember { mutableStateOf(false) }
 
             val playlistsRepo = remember {
-                Creator.providePlaylistsRepository(applicationContext)
+                Creator.getPlaylistsRepository(applicationContext)
             }
 
             val tracksLocalRepo = remember {
-                Creator.provideTracksLocalRepository(applicationContext)
+                Creator.getTracksLocalRepository(applicationContext)
             }
 
-            val searchRepository = remember { Creator.provideTracksRepository() }
+            val searchRepository = remember { Creator.getTracksRepository() }
 
-            val searchHistoryRepo = remember { Creator.provideSearchHistoryRepository(applicationContext) }
+            val searchHistoryRepo = remember { Creator.getSearchHistoryRepository(applicationContext) }
 
             PlaylistMakerTheme(darkTheme = isDark.value) {
                 Surface(
@@ -39,10 +39,10 @@ class AppActivity : ComponentActivity() {
                     PlaylistNavHost(
                         searchRepository = searchRepository,
                         playlistsRepository = playlistsRepo,
-                        tracksLocalRepository = tracksLocalRepo,
+                        localTracksRepository = tracksLocalRepo,
                         searchHistoryRepository = searchHistoryRepo,
                         isDarkTheme = isDark.value,
-                        onToggleTheme = { isDark.value = it }
+                        onThemeToggle = { isDark.value = it }
                     )
                 }
             }
