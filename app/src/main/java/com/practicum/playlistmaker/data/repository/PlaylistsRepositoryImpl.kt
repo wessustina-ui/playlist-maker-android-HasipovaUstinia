@@ -1,6 +1,7 @@
 package com.practicum.playlistmaker.data.repository
 
 import com.practicum.playlistmaker.data.dao.PlaylistRepository
+import com.practicum.playlistmaker.data.dao.TrackRepository
 import com.practicum.playlistmaker.data.entity.PlaylistEntity
 import com.practicum.playlistmaker.domain.Playlist
 import com.practicum.playlistmaker.domain.PlaylistsRepository
@@ -11,7 +12,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class PlaylistsRepositoryImpl(
-    private val playlistDao: PlaylistRepository
+    private val playlistDao: PlaylistRepository,
+    trackDao: TrackRepository
 ) : PlaylistsRepository {
 
     override fun fetchAllPlaylists(): Flow<List<Playlist>> = playlistDao.fetchAllPlaylists().map { playlistsWithTracks ->
